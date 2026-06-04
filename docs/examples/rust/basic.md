@@ -15,7 +15,7 @@ cargo run --manifest-path docs/examples/rust/Cargo.toml
 Or, with compatibility tests:
 
 ```bash
-cargo test --test gpt2_compat
+cargo test
 ```
 
 ## Code

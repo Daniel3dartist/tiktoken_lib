@@ -157,7 +157,7 @@ Tests verify upstream golden values:
 
 ```bash
 scons test=1
-cargo test --test gpt2_compat
+cargo test
 ```
 
 ## External resources (vocabularies and references)
@@ -203,7 +203,7 @@ src/
   ffi.rs          C bindings
   load.rs         Vocabulary download/cache
   encoding.rs     Built-in encodings (gpt2, cl100k, ...)
-tests/            test_gpt2.c, gpt2_compat.rs
+tests/            encoding_compat.rs, property_roundtrip.rs, model_tests.rs, test_gpt2.c
 SConstruct        SCons build
 Cargo.toml        Rust build
 ```

@@ -8,6 +8,8 @@ use rustc_hash::FxHashMap as HashMap;
 pub mod encoding;
 pub mod ffi;
 pub mod load;
+pub mod model;
+pub mod validation;
 
 pub use encoding::{get_encoding, list_encoding_names};
 pub use load::{data_gym_to_mergeable_bpe_ranks, load_tiktoken_bpe, read_file, read_file_cached};
@@ -554,6 +556,87 @@ impl CoreBPE {
     pub fn encode_with_special_tokens(&self, text: &str) -> Vec<Rank> {
         let allowed_special = self.special_tokens();
         self.encode(text, &allowed_special).unwrap().0
+    }
+
+    /// Encodes a single vocabulary item (mergeable bytes or special token string).
+    pub fn encode_single_token(&self, piece: &[u8]) -> Option<Rank> {
+        if let Some(&token) = self.encoder.get(piece) {
+            return Some(token);
+        }
+        if let Ok(piece_str) = std::str::from_utf8(piece) {
+            return self.special_tokens_encoder.get(piece_str).copied();
+        }
+        None
+    }
+
+    /// BPE on one regex piece without applying the split pattern.
+    pub fn encode_single_piece(&self, piece: &[u8]) -> Vec<Rank> {
+        if let Some(&token) = self.encoder.get(piece) {
+            return vec![token];
+        }
+        byte_pair_encode(piece, &self.encoder)
+    }
+
+    /// Decodes a single token id to its bytes.
+    pub fn decode_single_token_bytes(&self, token: Rank) -> Result<Vec<u8>, DecodeKeyError> {
+        if let Some(bytes) = self.decoder.get(&token) {
+            return Ok(bytes.clone());
+        }
+        self.special_tokens_decoder
+            .get(&token)
+            .cloned()
+            .ok_or(DecodeKeyError { token })
+    }
+
+    /// Decodes tokens to UTF-8, replacing invalid sequences (matches Python `decode(..., errors="replace")`).
+    pub fn decode_lossy(&self, tokens: &[Rank]) -> Result<String, DecodeKeyError> {
+        let bytes = self.decode_bytes(tokens)?;
+        Ok(String::from_utf8_lossy(&bytes).into_owned())
+    }
+
+    /// Largest token id in the vocabulary plus one.
+    pub fn n_vocab(&self) -> usize {
+        let max_merge = self.decoder.keys().copied().max().unwrap_or(0);
+        let max_special = self.special_tokens_decoder.keys().copied().max().unwrap_or(0);
+        (max_merge.max(max_special) as usize) + 1
+    }
+
+    /// Ordered mergeable token byte strings (excludes special tokens).
+    pub fn token_byte_values(&self) -> &[Vec<u8>] {
+        &self.sorted_token_bytes
+    }
+
+    /// Encodes arbitrary bytes, including invalid UTF-8 (matches Python `Encoding._encode_bytes`).
+    pub fn encode_bytes(&self, bytes: &[u8]) -> Vec<Rank> {
+        match std::str::from_utf8(bytes) {
+            Ok(text) => self.encode_ordinary(text),
+            Err(e) => {
+                let text = unsafe { std::str::from_utf8_unchecked(&bytes[..e.valid_up_to()]) };
+                let (mut tokens, last_piece_token_len) =
+                    self.encode(text, &HashSet::new()).unwrap();
+                let (mut tokens, last_piece_token_len) =
+                    self._increase_last_piece_token_len(tokens, last_piece_token_len);
+
+                let unstable_bytes = if !tokens.is_empty() && last_piece_token_len > 0 {
+                    let mut unstable_bytes = self
+                        .decode_bytes(&tokens[tokens.len() - last_piece_token_len..])
+                        .unwrap();
+                    unstable_bytes.extend_from_slice(&bytes[e.valid_up_to()..]);
+                    tokens.truncate(tokens.len() - last_piece_token_len);
+                    unstable_bytes
+                } else {
+                    bytes[e.valid_up_to()..].to_vec()
+                };
+
+                if !unstable_bytes.is_empty() {
+                    match self.encoder.get(&unstable_bytes) {
+                        Some(&token) => tokens.push(token),
+                        None => tokens.extend(&byte_pair_encode(&unstable_bytes, &self.encoder)),
+                    }
+                }
+                tokens
+            }
+        }
     }
 }
 
