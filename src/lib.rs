@@ -3,13 +3,18 @@ use std::num::NonZeroU64;
 use std::thread;
 
 use fancy_regex::Regex;
-
 use rustc_hash::FxHashMap as HashMap;
 
+pub mod encoding;
+pub mod ffi;
+pub mod load;
+
+pub use encoding::{get_encoding, list_encoding_names};
+pub use load::{data_gym_to_mergeable_bpe_ranks, load_tiktoken_bpe, read_file, read_file_cached};
 
 pub type Rank = u32;
 
-fn _byte_pair_merge(ranks: &HashMap<Vec<u8>, Rank>, piece: &[u8]) -> Vec<(usize, Rank)> {
+pub(crate) fn _byte_pair_merge(ranks: &HashMap<Vec<u8>, Rank>, piece: &[u8]) -> Vec<(usize, Rank)> {
     // This is a vector of (start, rank).
     // The rank is of the pair starting at position start.
     let mut parts = Vec::with_capacity(piece.len() + 1);
@@ -208,8 +213,8 @@ impl CoreBPE {
 
     /// Decodes tokens into a list of bytes.
     ///
-    /// The bytes are not gauranteed to be a valid utf-8 string.
-    fn decode_bytes(&self, tokens: &[Rank]) -> Result<Vec<u8>, DecodeKeyError> {
+    /// The bytes are not guaranteed to be a valid UTF-8 string.
+    pub fn decode_bytes(&self, tokens: &[Rank]) -> Result<Vec<u8>, DecodeKeyError> {
         let mut ret = Vec::with_capacity(tokens.len() * 2);
         for &token in tokens {
             let token_bytes = match self.decoder.get(&token) {
@@ -222,6 +227,16 @@ impl CoreBPE {
             ret.extend(token_bytes);
         }
         Ok(ret)
+    }
+
+    /// Decodes tokens into a UTF-8 string.
+    pub fn decode(&self, tokens: &[Rank]) -> Result<String, DecodeError> {
+        let bytes = self.decode_bytes(tokens).map_err(|e| DecodeError {
+            message: e.to_string(),
+        })?;
+        String::from_utf8(bytes).map_err(|e| DecodeError {
+            message: e.to_string(),
+        })
     }
 
     pub fn encode_ordinary(&self, text: &str) -> Vec<Rank> {
