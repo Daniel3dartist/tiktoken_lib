@@ -1,0 +1,12 @@
+[package]
+name = "tiktoken-example-basic"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "basic"
+path = "basic.rs"
+
+[dependencies]
+tiktoken = { path = "../../.." }

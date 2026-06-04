@@ -1,21 +1,23 @@
 # TikToken Lib
 
-Reescrita em **Rust** do núcleo do [OpenAI tiktoken](https://github.com/openai/tiktoken), exposta como biblioteca nativa para **C**, **C++** e outras linguagens compatíveis com `.a`, `.lib`, `.dll`, `.so` e `.dylib`.
+**Rust** rewrite of the [OpenAI tiktoken](https://github.com/openai/tiktoken) core, exposed as a native library for **C**, **C++**, and other languages that link against `.a`, `.lib`, `.dll`, `.so`, and `.dylib`.
 
-O comportamento de tokenização é compatível com o projeto Python original (incluindo GPT-2 / `r50k_base`). A referência upstream está em `.samples/tiktoken` (gitignored).
+Tokenization behavior matches the original Python project (including GPT-2 / `r50k_base`). The upstream reference lives in `.samples/tiktoken` (gitignored).
 
-## Requisitos
+**Full documentation and examples:** [`docs/`](docs/README.md) — installation, linking, C API, and sample code in C, C++, and Rust.
 
-| Ferramenta | Uso |
-|------------|-----|
-| [Rust](https://www.rust-lang.org/tools/install) (stable) | Compila o núcleo BPE + FFI |
-| [SCons](https://scons.org/) | Build padrão deste projeto |
-| MSVC Build Tools (Windows) ou GCC/Clang (Linux/macOS) | Linkar testes/exemplos em C |
-| Acesso HTTP (primeira execução) | Download dos arquivos de vocabulário |
+## Requirements
 
-### Cache de vocabulário
+| Tool | Purpose |
+|------|---------|
+| [Rust](https://www.rust-lang.org/tools/install) (stable) | Builds the BPE core + FFI |
+| [SCons](https://scons.org/) | Default build for this project |
+| MSVC Build Tools (Windows) or GCC/Clang (Linux/macOS) | Link C tests/examples |
+| HTTP access (first run) | Downloads vocabulary files |
 
-Na primeira carga de um encoding (`gpt2`, `cl100k_base`, etc.), os arquivos são baixados e cacheados:
+### Vocabulary cache
+
+On first load of an encoding (`gpt2`, `cl100k_base`, etc.), files are downloaded and cached:
 
 ```bash
 # Windows (PowerShell)
@@ -25,59 +27,59 @@ $env:TIKTOKEN_CACHE_DIR = "C:\cache\tiktoken"
 export TIKTOKEN_CACHE_DIR=/var/cache/tiktoken
 ```
 
-Alternativa compatível com o Python: `DATA_GYM_CACHE_DIR`.
+Python-compatible alternative: `DATA_GYM_CACHE_DIR`.
 
 ## Build
 
 ```bash
-# Biblioteca estática + headers + teste (não executa)
+# Static library + headers + test binary (does not run)
 scons
 
-# Executar teste de compatibilidade GPT-2 (baixa vocabulário na 1ª vez)
+# Run GPT-2 compatibility test (downloads vocabulary on first run)
 scons test=1
 
-# Biblioteca dinâmica (DLL/SO)
+# Shared library (DLL/SO)
 scons shared=1
 
-# Instalar em build/install (ou prefix=/usr/local)
+# Install to build/install (or prefix=/usr/local)
 scons install
 ```
 
-Artefatos gerados em `build/`:
+Artifacts in `build/`:
 
-| Arquivo | Descrição |
-|---------|-----------|
-| `tiktoken.lib` / `libtiktoken.a` | Biblioteca estática |
-| `tiktoken.dll` / `libtiktoken.so` | Biblioteca dinâmica (`shared=1`) |
-| `tiktoken.h` | API C |
-| `tiktoken.hpp` | Wrapper C++ (RAII) |
-| `test_gpt2` / `test_gpt2.exe` | Teste de compatibilidade |
+| File | Description |
+|------|-------------|
+| `tiktoken.lib` / `libtiktoken.a` | Static library |
+| `tiktoken.dll` / `libtiktoken.so` | Shared library (`shared=1`) |
+| `tiktoken.h` | C API |
+| `tiktoken.hpp` | C++ wrapper (RAII) |
+| `test_gpt2` / `test_gpt2.exe` | Compatibility test |
 
-Build direto com Cargo (sem SCons):
+Direct Cargo build (without SCons):
 
 ```bash
 cargo build --release
-# Estático: target/release/tiktoken.lib (Windows) ou libtiktoken.a (Unix)
-# Dinâmico:  target/release/tiktoken.dll / libtiktoken.so
+# Static: target/release/tiktoken.lib (Windows) or libtiktoken.a (Unix)
+# Shared: target/release/tiktoken.dll / libtiktoken.so
 ```
 
-## Encodings embutidos
+## Built-in encodings
 
-Carregados via `tiktoken_get_encoding("nome", &err)` ou `tiktoken::Encoding enc("nome")`:
+Load with `tiktoken_get_encoding("name", &err)` or `tiktoken::Encoding enc("name")`:
 
-| Nome | Uso típico |
-|------|------------|
-| `gpt2` | GPT-2 (vocabulário legacy via vocab.bpe + encoder.json) |
-| `r50k_base` | Base GPT-3 davinci / modelos r50k |
-| `p50k_base` | text-davinci-003 e similares |
-| `p50k_edit` | Modelos de edição (FIM tokens) |
+| Name | Typical use |
+|------|-------------|
+| `gpt2` | GPT-2 (legacy vocabulary via vocab.bpe + encoder.json) |
+| `r50k_base` | Base GPT-3 davinci / r50k models |
+| `p50k_base` | text-davinci-003 and similar |
+| `p50k_edit` | Edit models (FIM tokens) |
 | `cl100k_base` | GPT-4, GPT-3.5-turbo |
 | `o200k_base` | GPT-4o |
 | `o200k_harmony` | GPT-OSS / harmony |
 
-## Linkagem
+## Linking
 
-### C — estático (Windows)
+### C — static (Windows)
 
 ```c
 #include "tiktoken.h"
@@ -85,26 +87,26 @@ Carregados via `tiktoken_get_encoding("nome", &err)` ou `tiktoken::Encoding enc(
 // cl ... /I path/to/include test.c tiktoken.lib ws2_32.lib userenv.lib bcrypt.lib advapi32.lib ntdll.lib
 ```
 
-Bibliotecas extras são dependências transitivas do runtime Rust (rede para download de vocabulário).
+Extra libraries are transitive dependencies of the Rust runtime (network for vocabulary download).
 
-### C — estático (Linux/macOS)
+### C — static (Linux/macOS)
 
 ```bash
 gcc -Iinclude test.c -Lbuild -Wl,--whole-archive build/libtiktoken.a -Wl,--no-whole-archive -lpthread -ldl -lm -o test
 ```
 
-### C — dinâmico
+### C — shared
 
 ```bash
 # Linux
 gcc -Iinclude test.c -Lbuild -ltiktoken -Wl,-rpath,build -o test
 
-# Windows: tiktoken.dll no PATH + tiktoken.dll.lib no link
+# Windows: tiktoken.dll on PATH + tiktoken.dll.lib at link time
 ```
 
-### C++ 
+### C++
 
-Inclua `tiktoken.hpp` e linke da mesma forma que C:
+Include `tiktoken.hpp` and link the same way as C:
 
 ```cpp
 #include "tiktoken.hpp"
@@ -114,7 +116,7 @@ auto tokens = enc.encode_ordinary("hello world");  // {31373, 995}
 auto text = enc.decode(tokens);                    // "hello world"
 ```
 
-### Rust (mesmo crate)
+### Rust (same crate)
 
 ```rust
 use tiktoken::get_encoding;
@@ -123,9 +125,9 @@ let enc = get_encoding("gpt2")?;
 assert_eq!(enc.encode_ordinary("hello world"), vec![31373, 995]);
 ```
 
-Para outro crate Rust consumindo a lib estática, use `links` + `build.rs` apontando para `libtiktoken.a` e inclua `tiktoken.h` via `bindgen` se necessário.
+For another Rust crate consuming the static library, use `links` + `build.rs` pointing at `libtiktoken.a` and include `tiktoken.h` via `bindgen` if needed.
 
-## API C (resumo)
+## C API (summary)
 
 ```c
 CoreBPEError err = {0};
@@ -142,65 +144,66 @@ corebpe_free(enc);
 corebpe_error_free(&err);
 ```
 
-Toda memória alocada pela biblioteca deve ser liberada com as funções `encode_result_free`, `tiktoken_free_string`, `tiktoken_free_bytes`, `strings_array_free` ou `corebpe_error_free`.
+All memory allocated by the library must be freed with `encode_result_free`, `tiktoken_free_string`, `tiktoken_free_bytes`, `strings_array_free`, or `corebpe_error_free`.
 
-## Compatibilidade GPT-2
+## GPT-2 compatibility
 
-Testes verificam os valores golden do upstream:
+Tests verify upstream golden values:
 
-| Entrada | Tokens esperados |
-|---------|------------------|
+| Input | Expected tokens |
+|-------|-----------------|
 | `"hello world"` | `[31373, 995]` |
-| `"hello <|endoftext|>"` (special permitido) | `[31373, 220, 50256]` |
+| `"hello <|endoftext|>"` (special allowed) | `[31373, 220, 50256]` |
 
 ```bash
 scons test=1
 cargo test --test gpt2_compat
 ```
 
-## Recursos externos (vocabulários e referências)
+## External resources (vocabularies and references)
 
-Links usados pelo projeto Python original — o que é cada um:
+Links used by the original Python project — what each one is:
 
-### Vocabulários (Azure Blob Storage)
+### Vocabularies (Azure Blob Storage)
 
-| URL | O que é |
-|-----|---------|
-| https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe | **Merge table GPT-2**: pares de bytes BPE e ordem de merge usada no treinamento original do GPT-2. |
-| https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json | **Vocabulário GPT-2**: mapa token→índice; usado para validar que `vocab.bpe` produz os mesmos ranks. |
-| https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken | **Vocabulário r50k pré-compilado**: 50 257 tokens mergeáveis + regex r50k; equivalente ao GPT-2 para modelos base. |
-| https://openaipublic.blob.core.windows.net/encodings/p50k_base.tiktoken | **Vocabulário p50k**: extensão do r50k com tokens extras (50281 total). |
-| https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken | **Vocabulário cl100k**: usado por GPT-3.5/4 (100 256 mergeáveis + especiais). |
-| https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken | **Vocabulário o200k**: usado por GPT-4o e modelos recentes. |
+| URL | What it is |
+|-----|------------|
+| https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/vocab.bpe | **GPT-2 merge table**: BPE byte pairs and merge order from original GPT-2 training. |
+| https://openaipublic.blob.core.windows.net/gpt-2/encodings/main/encoder.json | **GPT-2 vocabulary**: token→index map; used to verify `vocab.bpe` produces the same ranks. |
+| https://openaipublic.blob.core.windows.net/encodings/r50k_base.tiktoken | **Precompiled r50k vocabulary**: 50 257 mergeable tokens + r50k regex; equivalent to GPT-2 for base models. |
+| https://openaipublic.blob.core.windows.net/encodings/p50k_base.tiktoken | **p50k vocabulary**: r50k extension with extra tokens (50281 total). |
+| https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken | **cl100k vocabulary**: used by GPT-3.5/4 (100 256 mergeable + specials). |
+| https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken | **o200k vocabulary**: used by GPT-4o and recent models. |
 
-Formato `.tiktoken`: uma linha por token, `base64(token_bytes) rank`.
+`.tiktoken` format: one line per token, `base64(token_bytes) rank`.
 
-### Documentação e projeto
+### Documentation and project
 
-| URL | O que é |
-|-----|---------|
-| https://en.wikipedia.org/wiki/Byte_pair_encoding | Explicação do algoritmo **Byte Pair Encoding (BPE)**. |
-| https://github.com/openai/tiktoken | Repositório **oficial OpenAI tiktoken** (Python + Rust). |
-| https://pypi.org/project/tiktoken | Pacote **PyPI** do tiktoken Python. |
-| https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb | **Notebook** de exemplos para contar tokens. |
-| https://github.com/openai/tiktoken/issues | **Issues** / suporte do projeto upstream. |
-| https://github.com/rust-lang/regex/blob/master/PERFORMANCE.md | Notas de performance do motor regex (referenciado no core Rust). |
+| URL | What it is |
+|-----|------------|
+| https://en.wikipedia.org/wiki/Byte_pair_encoding | **Byte Pair Encoding (BPE)** algorithm overview. |
+| https://github.com/openai/tiktoken | **Official OpenAI tiktoken** repository (Python + Rust). |
+| https://pypi.org/project/tiktoken | **PyPI** package for Python tiktoken. |
+| https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb | **Notebook** with token-counting examples. |
+| https://github.com/openai/tiktoken/issues | Upstream **issues** / support. |
+| https://github.com/rust-lang/regex/blob/master/PERFORMANCE.md | Regex engine performance notes (referenced in the Rust core). |
 
-## Licenças
+## Licenses
 
-- Este projeto: MIT — ver [LICENSE](LICENSE)
-- Core derivado do OpenAI tiktoken: MIT — ver [licenses/OpenAI/LICENSE](licenses/OpenAI/LICENSE)
+- This project: MIT — see [LICENSE](LICENSE)
+- Core derived from OpenAI tiktoken: MIT — see [licenses/OpenAI/LICENSE](licenses/OpenAI/LICENSE)
 
-## Estrutura
+## Layout
 
 ```
+docs/             Documentation and examples (C, C++, Rust)
 include/          tiktoken.h, tiktoken.hpp
 src/
   lib.rs          Core BPE (encode/decode)
-  ffi.rs          Bindings C
-  load.rs         Download/cache de vocabulários
-  encoding.rs     Encodings embutidos (gpt2, cl100k, ...)
+  ffi.rs          C bindings
+  load.rs         Vocabulary download/cache
+  encoding.rs     Built-in encodings (gpt2, cl100k, ...)
 tests/            test_gpt2.c, gpt2_compat.rs
-SConstruct        Build SCons
-Cargo.toml        Build Rust
+SConstruct        SCons build
+Cargo.toml        Rust build
 ```
