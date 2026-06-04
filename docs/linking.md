@@ -123,6 +123,29 @@ fn main() {
 
 ---
 
+## Go (CGO)
+
+Go consumes the same C API via CGO. Build the static library first (`scons`), then link from your package:
+
+```go
+/*
+#cgo linux LDFLAGS: -L/path/to/tiktoken_lib/build -Wl,--whole-archive -ltiktoken -Wl,--no-whole-archive -lpthread -ldl -lm
+#cgo CFLAGS: -I/path/to/tiktoken_lib/include
+#include "tiktoken.h"
+*/
+import "C"
+```
+
+Requirements:
+
+- `CGO_ENABLED=1`
+- A C toolchain (`gcc` on Linux, Xcode on macOS, `cl` on Windows with MSVC)
+- Free library allocations with `encode_result_free`, `tiktoken_free_string`, `corebpe_free`, etc.
+
+Full walkthrough: [examples/go/basic.md](examples/go/basic.md).
+
+---
+
 ## Summary
 
 | Mode | Windows | Linux/macOS |

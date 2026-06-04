@@ -6,6 +6,7 @@ Reference programs for integrating TikToken Lib. Build after `scons` at the repo
 |--------|----------|-------|
 | [c/](c/) | C | `basic`, `special_tokens`, `list_encodings` |
 | [cpp/](cpp/) | C++ | `basic` |
+| [go/](go/) | Go | `basic` (CGO + C API) |
 | [rust/](rust/) | Rust | `basic` (crate path) |
 
 ## Build all (reference)
@@ -30,6 +31,16 @@ gcc -Iinclude -Ibuild docs/examples/c/basic.c \
   -Wl,--whole-archive build/libtiktoken.a -Wl,--no-whole-archive \
   -lpthread -ldl -lm -o build/ex_basic
 ./build/ex_basic
+```
+
+### Go (CGO)
+
+```bash
+cd ../..   # root
+scons
+
+cd docs/examples/go
+CGO_ENABLED=1 go run .
 ```
 
 Detailed instructions in each `.md` under the subfolders.

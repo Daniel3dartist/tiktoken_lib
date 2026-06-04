@@ -23,6 +23,7 @@ Runnable code in [`examples/`](examples/):
 | [c/special_tokens](examples/c/special_tokens.md) | C | `<\|endoftext\|>` and allowed tokens |
 | [c/list_encodings](examples/c/list_encodings.md) | C | List available encodings |
 | [cpp/basic](examples/cpp/basic.md) | C++ | RAII wrapper with `tiktoken.hpp` |
+| [go/basic](examples/go/basic.md) | Go | CGO bindings to the C API |
 | [rust/basic](examples/rust/basic.md) | Rust | Direct crate usage |
 
 ## Quick start (C)

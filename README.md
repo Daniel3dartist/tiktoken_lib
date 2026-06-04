@@ -4,7 +4,7 @@
 
 Tokenization behavior matches the original Python project (including GPT-2 / `r50k_base`). The upstream reference lives in `.samples/tiktoken` (gitignored).
 
-**Full documentation and examples:** [`docs/`](docs/README.md) — installation, linking, C API, and sample code in C, C++, and Rust.
+**Full documentation and examples:** [`docs/`](docs/README.md) — installation, linking, C API, and sample code in C, C++, Go, and Rust.
 
 ## Requirements
 
@@ -196,7 +196,7 @@ Links used by the original Python project — what each one is:
 ## Layout
 
 ```
-docs/             Documentation and examples (C, C++, Rust)
+docs/             Documentation and examples (C, C++, Go, Rust)
 include/          tiktoken.h, tiktoken.hpp
 src/
   lib.rs          Core BPE (encode/decode)
