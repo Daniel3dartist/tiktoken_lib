@@ -8,7 +8,7 @@ from SCons.Script import (
     Dir,
     Environment,
     Help,
-    MkDir,
+    Mkdir,
 )
 
 Help("""
