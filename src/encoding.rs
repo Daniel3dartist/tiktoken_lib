@@ -96,7 +96,7 @@ fn load_o200k_base() -> Result<(HashMap<Vec<u8>, Rank>, Option<&'static str>), B
 }
 
 fn gpt2_special_tokens() -> HashMap<String, Rank> {
-    HashMap::from([(ENDOFTEXT.to_string(), 50256)])
+    HashMap::from_iter([(ENDOFTEXT.to_string(), 50256)])
 }
 
 fn r50k_special_tokens() -> HashMap<String, Rank> {
@@ -108,7 +108,7 @@ fn p50k_special_tokens() -> HashMap<String, Rank> {
 }
 
 fn p50k_edit_special_tokens() -> HashMap<String, Rank> {
-    HashMap::from([
+    HashMap::from_iter([
         (ENDOFTEXT.to_string(), 50256),
         (FIM_PREFIX.to_string(), 50281),
         (FIM_MIDDLE.to_string(), 50282),
@@ -117,7 +117,7 @@ fn p50k_edit_special_tokens() -> HashMap<String, Rank> {
 }
 
 fn cl100k_special_tokens() -> HashMap<String, Rank> {
-    HashMap::from([
+    HashMap::from_iter([
         (ENDOFTEXT.to_string(), 100257),
         (FIM_PREFIX.to_string(), 100258),
         (FIM_MIDDLE.to_string(), 100259),
@@ -127,7 +127,7 @@ fn cl100k_special_tokens() -> HashMap<String, Rank> {
 }
 
 fn o200k_special_tokens() -> HashMap<String, Rank> {
-    HashMap::from([
+    HashMap::from_iter([
         (ENDOFTEXT.to_string(), 199999),
         (ENDOFPROMPT.to_string(), 200018),
     ])

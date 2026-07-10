@@ -109,7 +109,8 @@ fn test_simple_regex_cl100k() {
 
 #[test]
 fn test_basic_encode() {
-    let allowed_r50k = all_special(&load("r50k_base"));
+    let r50k_enc = load("r50k_base");
+    let allowed_r50k = all_special(&r50k_enc);
     let enc = load("r50k_base");
     assert_eq!(
         validation::encode_checked(&enc, "hello world", &HashSet::new(), &allowed_r50k).unwrap(),

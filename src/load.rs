@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use base64::Engine;
 use rustc_hash::FxHashMap as HashMap;
 use sha1::{Digest as Sha1Digest, Sha1};
-use sha2::{Digest as Sha2Digest, Sha256};
+use sha2::Sha256;
 
 use crate::Rank;
 

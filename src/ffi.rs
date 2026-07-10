@@ -135,9 +135,9 @@ fn ranks_from_config(config: &CoreBPEConfig) -> Result<CoreBPE, String> {
 fn allowed_special_from_c(
     allowed_special: *const *const c_char,
     allowed_special_len: usize,
-) -> Result<(HashSet<&str>, Vec<String>), String> {
+) -> Result<Vec<String>, String> {
     if allowed_special_len == 0 {
-        return Ok((HashSet::new(), Vec::new()));
+        return Ok(Vec::new());
     }
     if allowed_special.is_null() {
         return Err("allowed_special must not be null when len > 0".into());
@@ -155,8 +155,7 @@ fn allowed_special_from_c(
             );
         }
     }
-    let set = owned.iter().map(|s| s.as_str()).collect();
-    Ok((set, owned))
+    Ok(owned)
 }
 
 fn ranks_from_c_arrays(
@@ -338,13 +337,14 @@ pub extern "C" fn corebpe_encode(
         }
     };
 
-    let (allowed, _owned) = match allowed_special_from_c(allowed_special, allowed_special_len) {
+    let owned = match allowed_special_from_c(allowed_special, allowed_special_len) {
         Ok(v) => v,
         Err(e) => {
             set_error(error, e, false);
             return empty;
         }
     };
+    let allowed: HashSet<&str> = owned.iter().map(|s| s.as_str()).collect();
 
     match unsafe { (&(*bpe).inner).encode(text, &allowed) } {
         Ok((tokens, last_piece_token_len)) => {
@@ -417,8 +417,8 @@ pub extern "C" fn corebpe_encode_unstable_native(
         }
     };
 
-    let (allowed, _owned) =
-        allowed_special_from_c(allowed_special, allowed_special_len).unwrap_or_default();
+    let owned = allowed_special_from_c(allowed_special, allowed_special_len).unwrap_or_default();
+    let allowed: HashSet<&str> = owned.iter().map(|s| s.as_str()).collect();
     let (tokens, completions) =
         unsafe { (&(*bpe).inner)._encode_unstable_native(text, &allowed) };
 

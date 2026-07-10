@@ -482,7 +482,7 @@ impl CoreBPE {
         (tokens, completions)
     }
 
-    pub fn new<E, SE, NSE>(
+    pub fn new<E, SE>(
         encoder: E,
         special_tokens_encoder: SE,
         pattern: &str,
@@ -490,7 +490,6 @@ impl CoreBPE {
     where
         E: IntoIterator<Item = (Vec<u8>, Rank)>,
         SE: IntoIterator<Item = (String, Rank)>,
-        NSE: IntoIterator<Item = (String, (Rank, Rank))>,
     {
         Self::new_internal(
             HashMap::from_iter(encoder),
@@ -612,7 +611,7 @@ impl CoreBPE {
             Ok(text) => self.encode_ordinary(text),
             Err(e) => {
                 let text = unsafe { std::str::from_utf8_unchecked(&bytes[..e.valid_up_to()]) };
-                let (mut tokens, last_piece_token_len) =
+                let (tokens, last_piece_token_len) =
                     self.encode(text, &HashSet::new()).unwrap();
                 let (mut tokens, last_piece_token_len) =
                     self._increase_last_piece_token_len(tokens, last_piece_token_len);
