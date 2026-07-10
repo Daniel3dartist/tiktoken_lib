@@ -124,8 +124,7 @@ fn uuid_simple() -> String {
 }
 
 fn py_isprintable(b: u8) -> bool {
-    let c = char::from_u32(u32::from(b)).unwrap_or('\0');
-    !c.is_control() && c != ' ' && c != '\u{7f}'
+    matches!(b, 33..=126 | 161..=172 | 174..=255)
 }
 
 pub fn data_gym_to_mergeable_bpe_ranks(
