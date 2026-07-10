@@ -9,9 +9,40 @@
 | MSVC Build Tools (Windows) or GCC/Clang (Unix) | For C/C++ examples | Link against the library |
 | HTTP network | First run | Download `.tiktoken` / GPT-2 files |
 
-### Windows — MSVC
+### Windows — MSVC (required for `cargo test` / `cargo build`)
 
-Install **Build Tools for Visual Studio** with the **Desktop development with C++** workload (provides `link.exe`, required by Rust on the MSVC target).
+Rust on Windows defaults to **`x86_64-pc-windows-msvc`**, which needs Microsoft’s linker **`link.exe`** (not included with `rustup` alone).
+
+**Install (pick one):**
+
+1. [Build Tools for Visual Studio 2022](https://visualstudio.microsoft.com/visual-cpp-build-tools/) → workload **“Desenvolvimento para desktop com C++”** / **Desktop development with C++** (includes MSVC, `link.exe`, Windows SDK).
+2. Full Visual Studio 2022 with the same workload.
+
+**Verify** (new terminal after install):
+
+```powershell
+where.exe link.exe
+# e.g. C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\...\bin\Hostx64\x64\link.exe
+```
+
+Then:
+
+```powershell
+cargo test
+```
+
+**If `link.exe` is still not found**, open **“Developer PowerShell for VS 2022”** (or **x64 Native Tools Command Prompt**) and run `cargo test` from there so `VC\Tools\MSVC\...\bin` is on `PATH`.
+
+**Alternative (GNU toolchain, no `link.exe`):** install [MSYS2](https://www.msys2.org/) or MinGW-w64, then:
+
+```powershell
+rustup toolchain install stable-x86_64-pc-windows-gnu
+rustup default stable-x86_64-pc-windows-gnu
+# ensure gcc is on PATH, e.g. C:\msys64\mingw64\bin
+cargo test
+```
+
+Note: `scons` / MSVC examples in this repo still expect the **MSVC** toolchain on Windows unless you adapt link flags.
 
 ### Vocabulary cache
 

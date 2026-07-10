@@ -4,6 +4,8 @@ Rust ports of the public upstream tests in `.samples/tiktoken/tests/`.
 
 ## Run
 
+**Windows:** `cargo test` needs the MSVC linker (`link.exe`). Install [Build Tools for Visual Studio](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the **Desktop development with C++** workload. See [docs/installation.md](../docs/installation.md).
+
 ```bash
 cargo test
 # limit property-test cases (default 100, same env as upstream)
