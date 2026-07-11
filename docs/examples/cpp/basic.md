@@ -1,4 +1,4 @@
-# C++ example — basic
+# C++ example - basic
 
 Uses the RAII wrapper in `include/tiktoken.hpp`.
 
@@ -56,4 +56,4 @@ Dynamic linking: [linking.md](../../linking.md).
 | API | When |
 |-----|------|
 | `tiktoken.h` | Pure C projects, FFI from other languages |
-| `tiktoken.hpp` | C++ projects — less memory boilerplate |
+| `tiktoken.hpp` | C++ projects - less memory boilerplate |

@@ -4,7 +4,7 @@
 
 Tokenization behavior matches the original Python project (including GPT-2 / `r50k_base`). The upstream reference lives in `.samples/tiktoken` (gitignored).
 
-**Full documentation and examples:** [`docs/`](docs/README.md) — installation, linking, C API, and sample code in C, C++, Go, and Rust.
+**Full documentation and examples:** [`docs/`](docs/README.md) - installation, linking, C API, and sample code in C, C++, Go, and Rust.
 
 ## Requirements
 
@@ -79,7 +79,7 @@ Load with `tiktoken_get_encoding("name", &err)` or `tiktoken::Encoding enc("name
 
 ## Linking
 
-### C — static (Windows)
+### C - static (Windows)
 
 ```c
 #include "tiktoken.h"
@@ -89,13 +89,13 @@ Load with `tiktoken_get_encoding("name", &err)` or `tiktoken::Encoding enc("name
 
 Extra libraries are transitive dependencies of the Rust runtime (network for vocabulary download).
 
-### C — static (Linux/macOS)
+### C - static (Linux/macOS)
 
 ```bash
 gcc -Iinclude test.c -Lbuild -Wl,--whole-archive build/libtiktoken.a -Wl,--no-whole-archive -lpthread -ldl -lm -o test
 ```
 
-### C — shared
+### C - shared
 
 ```bash
 # Linux
@@ -162,7 +162,7 @@ cargo test
 
 ## External resources (vocabularies and references)
 
-Links used by the original Python project — what each one is:
+Links used by the original Python project - what each one is:
 
 ### Vocabularies (Azure Blob Storage)
 
@@ -190,8 +190,8 @@ Links used by the original Python project — what each one is:
 
 ## Licenses
 
-- This project: MIT — see [LICENSE](LICENSE)
-- Core derived from OpenAI tiktoken: MIT — see [licenses/OpenAI/LICENSE](licenses/OpenAI/LICENSE)
+- This project: MIT - see [LICENSE](LICENSE)
+- Core derived from OpenAI tiktoken: MIT - see [licenses/OpenAI/LICENSE](licenses/OpenAI/LICENSE)
 
 ## Layout
 

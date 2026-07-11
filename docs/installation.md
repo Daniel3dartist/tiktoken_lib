@@ -9,7 +9,7 @@
 | MSVC Build Tools (Windows) or GCC/Clang (Unix) | For C/C++ examples | Link against the library |
 | HTTP network | First run | Download `.tiktoken` / GPT-2 files |
 
-### Windows — MSVC (required for `cargo test` / `cargo build`)
+### Windows - MSVC (required for `cargo test` / `cargo build`)
 
 Rust on Windows defaults to **`x86_64-pc-windows-msvc`**, which needs Microsoft’s linker **`link.exe`** (not included with `rustup` alone).
 

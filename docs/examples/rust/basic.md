@@ -1,4 +1,4 @@
-# Rust example — basic
+# Rust example - basic
 
 Native crate usage without the C FFI. Best when the consumer is already Rust.
 

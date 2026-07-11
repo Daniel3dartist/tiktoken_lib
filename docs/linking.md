@@ -14,7 +14,7 @@ Typical directories after `scons`:
 
 ---
 
-## C — static
+## C - static
 
 ### Windows (MSVC)
 
@@ -48,7 +48,7 @@ clang your_code.c -Iinclude \
 
 ---
 
-## C — shared
+## C - shared
 
 Build: `scons shared=1`
 

@@ -1,4 +1,4 @@
-# C example — basic (GPT-2)
+# C example - basic (GPT-2)
 
 Loads the `gpt2` encoding, tokenizes `"hello world"`, and decodes back.
 
@@ -30,7 +30,7 @@ On first run, the GPT-2 vocabulary is downloaded and cached. Set `TIKTOKEN_CACHE
 EncodeResult encoded = corebpe_encode_ordinary(enc, "hello world");
 ```
 
-`encode_ordinary` does **not** treat strings like `<|endoftext|>` as special tokens — it only applies regex + BPE.
+`encode_ordinary` does **not** treat strings like `<|endoftext|>` as special tokens - it only applies regex + BPE.
 
 ### 3. Decode
 
@@ -74,5 +74,5 @@ More linking options: [linking.md](../../linking.md).
 
 ## Next steps
 
-- [special_tokens.md](special_tokens.md) — use `<|endoftext|>`
-- [list_encodings.md](list_encodings.md) — enumerate available encodings
+- [special_tokens.md](special_tokens.md) - use `<|endoftext|>`
+- [list_encodings.md](list_encodings.md) - enumerate available encodings

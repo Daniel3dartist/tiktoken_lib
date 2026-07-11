@@ -1,4 +1,4 @@
-//! Rust example — direct crate usage (no C FFI).
+//! Rust example - direct crate usage (no C FFI).
 //!
 //! Run from the repository root:
 //!   cargo run --example basic --manifest-path docs/examples/rust/Cargo.toml

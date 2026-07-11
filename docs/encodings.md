@@ -12,7 +12,7 @@ Load with `tiktoken_get_encoding("name", &err)` or, in C++, `tiktoken::Encoding 
 | `o200k_base` | o200k_base.tiktoken | o200k | GPT-4o |
 | `o200k_harmony` | o200k + harmony reserved | o200k | GPT-OSS / harmony |
 
-## GPT-2 / r50k — reference values
+## GPT-2 / r50k - reference values
 
 To validate compatibility with Python tiktoken:
 
@@ -36,7 +36,7 @@ To validate compatibility with Python tiktoken:
 - **Classic GPT-3.5 / GPT-4:** `cl100k_base`.
 - **GPT-4o:** `o200k_base`.
 
-The encoding name must match both the vocabulary **and** special tokens — do not mix one encoding's vocabulary with another's regex.
+The encoding name must match both the vocabulary **and** special tokens - do not mix one encoding's vocabulary with another's regex.
 
 ## Downloaded files
 

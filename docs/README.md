@@ -1,4 +1,4 @@
-# Documentation — TikToken Lib
+# Documentation - TikToken Lib
 
 Guide to the native BPE tokenization library (compatible with OpenAI tiktoken).
 
@@ -7,7 +7,7 @@ Guide to the native BPE tokenization library (compatible with OpenAI tiktoken).
 | Document | Contents |
 |----------|----------|
 | [Installation and build](installation.md) | Requirements, SCons, Cargo, vocabulary cache |
-| [Linking](linking.md) | Static vs shared — C, C++, Rust, Windows/Linux/macOS |
+| [Linking](linking.md) | Static vs shared - C, C++, Rust, Windows/Linux/macOS |
 | [C API](api-c.md) | Functions, types, encode/decode flow |
 | [Memory management](memory.md) | What to allocate, what to free |
 | [Encodings](encodings.md) | Built-in names and when to use each |

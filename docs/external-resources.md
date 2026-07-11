@@ -13,7 +13,7 @@ Same sources as [Python tiktoken](https://github.com/openai/tiktoken). The Rust 
 | https://openaipublic.blob.core.windows.net/encodings/cl100k_base.tiktoken | cl100k vocabulary (GPT-3.5/4) |
 | https://openaipublic.blob.core.windows.net/encodings/o200k_base.tiktoken | o200k vocabulary (GPT-4o) |
 
-`.tiktoken` format: one line per token — `base64(token_bytes) rank`.
+`.tiktoken` format: one line per token - `base64(token_bytes) rank`.
 
 SHA-256 hashes are verified on download (same values as Python).
 

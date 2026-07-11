@@ -1,4 +1,4 @@
-# C example — special tokens
+# C example - special tokens
 
 Demonstrates `<|endoftext|>` (ID **50256** in GPT-2) when explicitly allowed.
 

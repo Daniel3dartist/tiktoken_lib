@@ -23,7 +23,7 @@ TikToken Lib
   scons install                 Copy artifacts to prefix=build/install
 
 target= and shared= combine freely (static/dynamic x host/cross). Cross builds only compile
-the C test binary — this host can't execute a foreign OS's binary, so test=1 is rejected
+the C test binary - this host can't execute a foreign OS's binary, so test=1 is rejected
 when combined with a target= that isn't natively runnable here.
 
 Cache (first run downloads vocab files):
@@ -83,7 +83,7 @@ if target_os == "macos" and not host_is_macos:
 if run_tests and not can_execute_here:
     print(
         f"error: test=1 needs to run the built binary, which this host can't execute for "
-        f"target_os={target_os!r}. Drop test=1 for cross builds — the binary is still built "
+        f"target_os={target_os!r}. Drop test=1 for cross builds - the binary is still built "
         "and can be copied to a real machine of that OS to run by hand.",
         file=sys.stderr,
     )

@@ -37,7 +37,7 @@ Available names: see [encodings.md](encodings.md).
 
 ### Ordinary (ignores special tokens)
 
-Does not treat `<|endoftext|>` as a single token — tokenizes it as normal text.
+Does not treat `<|endoftext|>` as a single token - tokenizes it as normal text.
 
 ```c
 EncodeResult r = corebpe_encode_ordinary(enc, "hello world");

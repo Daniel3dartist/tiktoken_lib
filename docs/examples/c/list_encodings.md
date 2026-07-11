@@ -1,4 +1,4 @@
-# C example — list encodings
+# C example - list encodings
 
 Enumerates encodings registered in the library.
 
@@ -29,7 +29,7 @@ char** names = tiktoken_list_encoding_names(&count);
 strings_array_free(names, count);
 ```
 
-This example does **not** download vocabularies — it only reads in-memory metadata.
+This example does **not** download vocabularies - it only reads in-memory metadata.
 
 ## Compile
 

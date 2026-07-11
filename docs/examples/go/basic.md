@@ -1,4 +1,4 @@
-# Go example — basic (GPT-2)
+# Go example - basic (GPT-2)
 
 Uses **CGO** to call the C API from Go. Suitable when you want a Go service or CLI without a separate Rust dependency at runtime.
 
@@ -99,5 +99,5 @@ More link flags: [linking.md](../../linking.md).
 
 ## Next steps
 
-- [c/special_tokens.md](../c/special_tokens.md) — special-token behavior (same C API from Go)
-- [c/list_encodings.md](../c/list_encodings.md) — `tiktoken_list_encoding_names`
+- [c/special_tokens.md](../c/special_tokens.md) - special-token behavior (same C API from Go)
+- [c/list_encodings.md](../c/list_encodings.md) - `tiktoken_list_encoding_names`

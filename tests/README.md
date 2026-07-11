@@ -23,10 +23,10 @@ First run downloads vocabulary files (requires network); cache via `TIKTOKEN_CAC
 | `test_simple_public.py` | `encoding_compat.rs` | |
 | `test_misc.py` (`encoding_for_model`) | `model_tests.rs` | |
 | `src/lib.rs` BPE unit tests | `src/lib.rs` | unchanged |
-| `test_offsets.py` | — | `decode_with_offsets` not implemented |
-| `test_pickle.py` | — | Python-only |
-| `test_misc.py` (blobfile) | — | Python import check |
-| Lone UTF-16 surrogates | — | Cannot exist in Rust `&str`; emoji case covered |
+| `test_offsets.py` | - | `decode_with_offsets` not implemented |
+| `test_pickle.py` | - | Python-only |
+| `test_misc.py` (blobfile) | - | Python import check |
+| Lone UTF-16 surrogates | - | Cannot exist in Rust `&str`; emoji case covered |
 
 ## Intentional differences
 
