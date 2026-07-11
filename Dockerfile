@@ -1,24 +1,14 @@
-FROM debian:bookworm-slim
-
-WORKDIR /usr/src/tiktoken_lib
+FROM rust:1-bookworm
 
 RUN apt-get update && apt-get install -y \
+    scons \
     build-essential \
-    gcc \
-    g++ \
-    make \
-    cmake \
-    git \
-    libreadline-dev \
-    libssl-dev \
-    libsqlite3-dev \
-    libbz2-dev \
-    liblzma-dev \
-    libffi-dev \
-    libncursesw5-dev \
-    libreadline-dev \
-    libsqlite3-dev
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /workspace
 COPY . .
 
-CMD [ "bash" ]
+RUN cargo build --release && scons test=1
+
+CMD ["bash"]
