@@ -1,0 +1,40 @@
+name: test
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+  workflow_dispatch:
+
+env:
+  TIKTOKEN_CACHE_DIR: ${{ github.workspace }}/.tiktoken-cache
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SCons
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y scons
+
+      - name: Cache cargo registry and vocab downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            .tiktoken-cache
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+
+      - name: Run Rust test suite
+        run: cargo test --release
+
+      - name: Linux static (build + run C test)
+        run: scons test=1
+
+      - name: Linux shared (build + run C test)
+        run: scons shared=1 test=1
